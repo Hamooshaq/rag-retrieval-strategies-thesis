@@ -1,0 +1,44 @@
+run_id: pilot_v3
+seed: 260226
+manifest_path: data/manifests/pilot_documents.yaml
+development_questions_path: data/annotations/pilot_dev_questions.jsonl
+evaluation_questions_path: data/annotations/pilot_questions.jsonl
+output_dir: artifacts/pilot_v3
+
+embedding:
+  model_id: sentence-transformers/all-MiniLM-L6-v2
+  revision: fa97f6e7cb1a59073dff9e6b13e2715cf7475ac9
+  device: cpu
+  batch_size: 32
+  local_files_only: true
+
+generator:
+  model_id: Qwen/Qwen2.5-1.5B-Instruct
+  revision: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+  device: auto
+  local_files_only: true
+  max_new_tokens: 96
+  do_sample: false
+
+chunking:
+  fixed_tokens: 48
+  fixed_overlap: 8
+  child_tokens: 44
+  child_overlap: 6
+
+retrieval:
+  top_k: 4
+  candidate_k: 12
+  threshold_strategy: development_balanced_accuracy
+  default_threshold: 0.32
+
+context:
+  max_tokens: 220
+  locator_prefix: true
+
+timing:
+  warmup_calls: 1
+  baseline_order: seeded_cyclic_counterbalancing
+  timed_repeats_per_question_baseline: 1
+
+baselines: [B0, B1, B2, B3, B4]
